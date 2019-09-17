@@ -49,7 +49,7 @@ class vcEnroll extends WPBakeryShortCode {
                         'param_name' => 'courseheading',
                         //'value' => __( 'Default value', 'lc' ),
                         'description' => __( 'Box Title here', 'lc' ),
-                        'admin_label' => false,
+                        'admin_label' => true,
                         'weight' => 0,
                         'group' => 'Box 1',
                     ),
@@ -82,6 +82,17 @@ class vcEnroll extends WPBakeryShortCode {
 			 'group' => 'Box 1',
         ),
 		
+		   array(
+            "type"          => "checkbox",
+            "admin_label"   => true,
+            "weight"        => 10,
+            "heading"       => __( "Hide and Show this box", "js_composer" ),
+            "description"   => __("hide and show this box", "js_composer"),
+            //"value"         => array('On/Off'   => 'true' ),
+			"value" => __( "", "lc" ),
+            "param_name"    => "hideshow",
+			'group' => 'Box 2',
+        ),
 		  array(
                         'type' => 'attach_image',
                         'heading' => __( 'Service Icon', 'lc2' ),
@@ -139,12 +150,20 @@ class vcEnroll extends WPBakeryShortCode {
 			'listitem' => '',
 			'courseimg2' => '',
 			'courseheading2' => '',
+			'hideshow' => '',
 ), $listitems = vc_param_group_parse_atts( $atts["courselist"] ), $lists_item = vc_param_group_parse_atts( $atts["courselisting"] ),  $atts));
-//print_r($atts);
+/*print_r($atts[hideshow]);
+echo $atts[hideshow];*/
 //Fetching Image by ID
 $imgID = $atts[courseimg];
 $heading = $atts[courseheading];
+
+//Box 2 attributes
+$imgID2 = $atts[courseimg2];
+$heading2 = $atts[courseheading2];
+
 $images = wp_get_attachment_image_src( $imgID, 'full' );
+$images2 = wp_get_attachment_image_src( $imgID2, 'full' );
 
         // Fill $html var with data
 		foreach( $listitems as $item ){
@@ -163,7 +182,7 @@ $images = wp_get_attachment_image_src( $imgID, 'full' );
 		}
   }
 
-        $html .= '<div id="optionboxes">
+$html .= '<div id="optionboxes">
 <div class="price-plan">
 <figure class="text-center pt-5 pb-2"><img src="'.$images[0].'" /><figure>
     <h5>'.$heading .'</h5>
@@ -171,22 +190,20 @@ $images = wp_get_attachment_image_src( $imgID, 'full' );
     <ul class="price-points">'.$output_li.'</ul>
           <p class="price"><strong>Coming Soon</strong></p>
 </div>';
-if(!empty($courseheading2)){
+if($atts[hideshow] === 'true'){
 $html.='<div class="price-plan2">
-  <figure class="text-center pt-5 pb-2"><img src="https://wordpress-256654-883503.cloudwaysapps.com/wp-content/uploads/2018/06/Asset-2.png" /><figure>
-    <h5>Open Enrollment</h5>
+  <figure class="text-center pt-5 pb-2"><img src="'.$images2[0].'" /><figure>
+    <h5>'.$heading2.'</h5>
     <p class="price">Features include</p>
     <ul class="price-points">
-      <li>Everything in Self-Paced Learning, Plus</li>
-<li>Live online instructor-led class</li>
-<li>Flexible online class access for 90 days</li>
+      '.$output_li_two.'
     </ul>
 
     <a href="#" class="polyFirst poly2">Register Here</a>
   </div>';
 }
  $html .= '</div>';
-        return $html;
+ return $html;
          
     }
      
