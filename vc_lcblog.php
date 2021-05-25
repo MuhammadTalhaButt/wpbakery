@@ -45,7 +45,16 @@ class vcLcBlog extends WPBakeryShortCode {
           'display_inline' => false, // In UI show results inline view),
         ),
 		'group' => 'General',
-      ),     
+      ),    
+   array(
+                        'type' => 'textfield',
+                        ///'holder' => 'p',
+                        'heading' => __( 'Post Text Limit', 'lc' ),
+                        'param_name' => 'textlimit',
+                        'admin_label' => false,
+                        'weight' => 0,
+                        'group' => 'General',
+                    ),	  
                    
         
                 ),
@@ -60,19 +69,28 @@ class vcLcBlog extends WPBakeryShortCode {
          
         // Params extraction
         extract(
-            shortcode_atts( array('postid' => '', ),  $atts));
+            shortcode_atts( array('postid' => '','textlimit' => '', ),  $atts));
          //print_r($atts);
         // Fill $html var with data
+		if(empty($textlimit)){$textlimit = 40;}
+		
 		$curr_postid = $postid;//This is page id or post id
         $content_post = get_post($curr_postid);
+		//print_r($content_post);
 		$content = $content_post->post_content;
+		$postTitle = $content_post->post_title;
+		$finalcontent = shorttext($content, $textlimit);
+		
 $content = apply_filters('the_content', $content);
 $content = str_replace(']]>', ']]&gt;', $content);
-$url = wp_get_attachment_url( get_post_thumbnail_id($curr_postid), 'full' );
+$url = wp_get_attachment_url( get_post_thumbnail_id($curr_postid), array( 400, 150) );
+$linkurl = get_permalink($curr_postid);
         $html = '
         <div class="blog-post-wrap">
 		<figure><img src="'.$url.'" height="100" /></figure>
-		<section>'.$content.'</section>
+		<section>
+		<h3><a href="'.$linkurl.'">'.$postTitle.'</a></h3>
+		'.$finalcontent.'...</section>
 		</div>';
         return $html;
          
