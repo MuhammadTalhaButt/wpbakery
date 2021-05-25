@@ -1,2 +1,1 @@
-# wpbakery
-wpbakery custom codes
+To Create VC_map element with in bakery plugin
